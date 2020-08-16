@@ -23,7 +23,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client>  readAll() {
+        public List<Client>  readAll() {
         return clientRepository.findAll();
     }
 
