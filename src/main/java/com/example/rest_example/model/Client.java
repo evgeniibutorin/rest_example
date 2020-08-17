@@ -1,6 +1,5 @@
 package com.example.rest_example.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,9 +13,7 @@ public class Client {
 
     @Id //id колонки (первичный ключ - значение которое будет использоваться для обеспечения уникальности данных таблице
     @Column(name = "id") //указывает на имя колонки, которая отображается в свойство сущности
-    @SequenceGenerator(name = "clientsIdSeq", sequenceName = "clients_id_seq", allocationSize = 1)//установили новую аннотацию @SequenceGenerator для создания генератора последовательности, назначили ему имя clientsIdSeq, указали что это генератор для последовательности clients_id_seq, и добавили атрибут allocationSize = 1
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "clientsIdSeq") //указывает, что данное свойство будет создаваться согласно указанной стратегии можо поставить AUTO
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @GeneratedValue(strategy = GenerationType.AUTO) //указывает, что данное свойство будет создаваться согласно указанной стратегии можо поставить AUTO
     private Integer id;
 
     @Column(name = "name")

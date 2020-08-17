@@ -1,42 +1,50 @@
 package com.example.rest_example.controller;
 
-import com.example.rest_example.model.Client;
 import com.example.rest_example.model.Product;
-import com.example.rest_example.service.ProductService;
+import com.example.rest_example.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("goods")
 public class ProductController {
 
-    private final ProductService productService;
+    private final ProductRepository productRepository;
 
 
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    @PostMapping(value = "/goods")
-    public ResponseEntity<?> create(@RequestBody Product product) {
-        productService.create(product);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping
+    public Product create(@RequestBody Product product) {
+        return productRepository.save(product);
     }
 
-    @GetMapping(value = "/goods")
-    public ResponseEntity<List<Product>> read() {
-        final List<Product> products = productService.readAll();
+    @GetMapping
+    public List<Product> list() {
+        return productRepository.findAll();
+    }
 
-        return products != null && !products.isEmpty()
-                ? new ResponseEntity<>(products, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @GetMapping(value = "{id}")
+    public Product getOne(@PathVariable("id") Product product) {
+        return product;
+    }
+
+    @PutMapping(value = "{id}")
+    public Product update(@PathVariable(name = "id") Product productDB, @RequestBody Product product) {
+        return productRepository.save(productDB);
+    }
+
+    @DeleteMapping(value = "{id}")
+    public void delete(@PathVariable("id") Product product) {
+        productRepository.delete(product);
     }
 
 }
+
+
+
