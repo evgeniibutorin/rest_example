@@ -25,4 +25,9 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
-}
+
+    @OneToOne(cascade = CascadeType.ALL) // CascadeType.ALL указывает, что действие которое мы применфем к основному объекту будет применено и к ассоциируемому сохранили тут сохранилось и там то же с удалением
+    @JoinColumn(name = "Cart_id")
+    private Cart cart;
+
+   }

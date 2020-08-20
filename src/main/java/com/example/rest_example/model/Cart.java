@@ -3,10 +3,7 @@ package com.example.rest_example.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "Cart")
@@ -14,10 +11,18 @@ import javax.persistence.Table;
 @Setter
 public class Cart {
     @Id
-    @GeneratedValue
+    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private Integer id_client;
-    private Integer id_product;
 
+    @Column
+    private Integer client_id;
 
-}
+    @Column
+    private Integer product_id;
+
+    @Column
+    @OneToOne(mappedBy = "cart",cascade = CascadeType.ALL)//mappedBy = "id" указывается имя которое соответсвуеь полю в Person
+    private Client client;
+
+    }
