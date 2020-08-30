@@ -1,4 +1,4 @@
-package com.example.rest_example.model;
+/*package com.example.rest_example.model;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,3 +26,4 @@ public class Cart {
     private Client client;
 
     }
+*/
