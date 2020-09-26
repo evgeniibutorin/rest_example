@@ -2,10 +2,21 @@ package com.example.rest_example.controller;
 
 import com.example.rest_example.model.Client;
 import com.example.rest_example.repository.ClientRepository;
+import com.example.rest_example.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 //@RestController — говорит спрингу, что данный класс является REST контроллером. Т.е. в данном классе будет реализована логика обработки клиентских запросов
@@ -15,8 +26,12 @@ public class ClientController {
     private final ClientRepository clientRepository;
 
 
-    /* @Autowired — говорит спрингу, что в этом месте необходимо внедрить зависимость.
-    */
+    @Autowired
+    private ClientService clientService;
+
+
+    // @Autowired — говорит спрингу, что в этом месте необходимо внедрить зависимость.
+
       @Autowired
       public ClientController(ClientRepository clientRepository) {
           this.clientRepository = clientRepository;
@@ -28,8 +43,13 @@ public class ClientController {
     }
 
     @GetMapping
-    public List<Client> list(){
-         return clientRepository.findAll();
+    public Page<Client> findAll(
+            @PageableDefault(page = 0, size = 20)
+            @SortDefault.SortDefaults({
+        @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+        @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+    })Pageable pageable){
+        return clientRepository.findAll(pageable);
     }
 
     @GetMapping("{id}")
@@ -47,5 +67,31 @@ public class ClientController {
         clientRepository.delete(client);
     }
 
+    @PostMapping(value = "/seller", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+    public ResponseEntity saveClients(@RequestParam(value = "files") MultipartFile[] files) throws Exception {
+        for (MultipartFile file : files) {
+            clientService.saveClient(file);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
+    @GetMapping(value = "/allClients", produces = "application/json")
+    public CompletableFuture<ResponseEntity> findAllClient() {
+        return  clientService.findAllClients().thenApply(ResponseEntity::ok);
+    }
+
+
+    @GetMapping(value = "/getClientsByThread", produces = "application/json")
+    public  ResponseEntity getClients(){
+        CompletableFuture<List<Client>> client1=clientService.findAllClients();
+        CompletableFuture<List<Client>> client2=clientService.findAllClients();
+        CompletableFuture<List<Client>> client3=clientService.findAllClients();
+        CompletableFuture.allOf(client1,client2,client3).join();
+        return  ResponseEntity.status(HttpStatus.OK).build();
+    }
 }
+
+
+
+
+

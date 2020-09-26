@@ -1,15 +1,13 @@
 package com.example.rest_example.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity //указывает, что данный бин (класс) является сущностью
 @Table(name = "clients") //указывает на имя таблицы, которая будет отображаться в этой сущности
-@Getter
-@Setter
+@Data //это удобная сокращённая аннотация, которая содержит в себе возможности из @ToString, @EqualsAndHashCode, @Getter / @Setter и @RequiredArgsConstructor.
 public class Client {
 
     @Id //id колонки (первичный ключ - значение которое будет использоваться для обеспечения уникальности данных таблице
@@ -26,7 +24,7 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
-    @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL) //параметр cascade говорит JPA, что делать с владеемыми объектами при операциях над владельцем.
     @JoinColumn(name = "cp_fk", referencedColumnName = "id")
     private List<Product> products;
 

@@ -1,5 +1,7 @@
 package com.example.rest_example.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,21 +9,22 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
-@Getter
-@Setter
+@Data
 public class Product {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+   private Integer id;
 
-    @Column(name = "product_name")
-    private String product_name;
+   private String name;
 
-    @Column(name = "description")
-    private String description;
+   private String description;
 
-    @Column(name = "price")
-    private String price;
+   private double price;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "client_id", nullable = false)
+    @JsonIgnore
+    private Client client;
+
 }

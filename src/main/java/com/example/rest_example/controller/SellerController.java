@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class SellerController {
+
     @Autowired
     private SellerService sellerService;
 
