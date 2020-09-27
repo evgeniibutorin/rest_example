@@ -1,7 +1,6 @@
 package com.example.rest_example.service;
 
 import com.example.rest_example.model.Client;
-import com.example.rest_example.model.Seller;
 import com.example.rest_example.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -22,23 +21,22 @@ public class ClientService {
     private ClientRepository clientRepository;
 
     @Async
-    //аннотирование метода bean-компонента с помощью @Async заставит его выполняться в отдельном потоке, то есть вызывающий не будет ждать завершения вызванного метода.
-    public CompletableFuture<List<Client>> saveClient(MultipartFile file) throws Exception { //класс CompletableFuture — средство для передачи информации между параллельными потоками исполнения. интерфейс MultipartFile Представление загруженного файла, полученного в составном запросе.
+    public CompletableFuture<List<Client>> saveClient(MultipartFile file) throws Exception {
         List<Client> clients = parseFile(file);
         clients = clientRepository.saveAll(clients);
-        return CompletableFuture.completedFuture(clients); //completedFuture(sellers) Возвращает новый объект CompletableFuture, который уже завершен с заданным значением.
+        return CompletableFuture.completedFuture(clients);
     }
 
-   @Async
-    public CompletableFuture<List<Client>> findAllClients(){
-       List<Client> clients=clientRepository.findAll();
-      return CompletableFuture.completedFuture(clients);
+    @Async
+    public CompletableFuture<List<Client>> findAllClients() {
+        List<Client> clients = clientRepository.findAll();
+        return CompletableFuture.completedFuture(clients);
     }
 
     private List<Client> parseFile(final MultipartFile file) throws Exception {
         final List<Client> clients = new ArrayList<>();
-        try  {
-            try (final BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) { // BufferedReader класс считывает текст из символьного потока ввода, буферизируя прочитанные символы. InputStreamReader получает данные из потока, считывает байты и декодирует их в символы
+        try {
+            try (final BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     final String[] data = line.split(",");
@@ -54,7 +52,6 @@ public class ClientService {
             throw new Exception("Failed to parse file {}", e);
         }
     }
-
 
 }
 

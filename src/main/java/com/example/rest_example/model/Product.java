@@ -2,8 +2,6 @@ package com.example.rest_example.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -14,13 +12,13 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-   private Integer id;
+    private Integer id;
 
-   private String name;
+    private String name;
 
-   private String description;
+    private String description;
 
-   private double price;
+    private double price;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)

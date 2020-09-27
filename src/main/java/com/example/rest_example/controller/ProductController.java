@@ -24,7 +24,6 @@ public class ProductController {
     @Autowired
     private ClientRepository clientRepository;
 
-
     @PostMapping("/clients/{clientId}/products")
     public Product addProduct(@PathVariable Integer clientId,
                               @RequestBody Product product) throws NotFoundException {
@@ -35,7 +34,6 @@ public class ProductController {
                 }).orElseThrow(() -> new NotFoundException("Student not found!"));
     }
 
-
     //good
     @GetMapping
     public Page<Product> list(
@@ -43,7 +41,7 @@ public class ProductController {
             @SortDefault.SortDefaults({
                     @SortDefault(sort = "name", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-            }) Pageable pageable){
+            }) Pageable pageable) {
         return productRepository.findAll(pageable);
     }
 
@@ -53,29 +51,26 @@ public class ProductController {
         return product;
     }
 
-
     //good
     @GetMapping("/clients/{clientId}/products")
     public List<Product> getContactByClientId(@PathVariable Integer clientId) throws NotFoundException {
 
-        if(!clientRepository.existsById(clientId)) {
+        if (!clientRepository.existsById(clientId)) {
             throw new NotFoundException("Student not found!");
         }
 
         return productRepository.findByClientId(clientId);
     }
 
-
     //good
     @PutMapping("/clients/{clientId}/product/{productId}")
     public Product updateProduct(@PathVariable Integer clientId,
-                                       @PathVariable Integer productId,
-                                       @RequestBody Product productUpdated) throws NotFoundException {
+                                 @PathVariable Integer productId,
+                                 @RequestBody Product productUpdated) throws NotFoundException {
 
-        if(!clientRepository.existsById(clientId)) {
+        if (!clientRepository.existsById(clientId)) {
             throw new NotFoundException("Student not found!");
         }
-
         return productRepository.findById(productId)
                 .map(product -> {
                     product.setName(productUpdated.getName());
@@ -84,8 +79,6 @@ public class ProductController {
                     return productRepository.save(product);
                 }).orElseThrow(() -> new NotFoundException("Assignment not found!"));
     }
-
-
 
     //good
     @DeleteMapping(value = "{id}")
@@ -98,10 +91,9 @@ public class ProductController {
     public String deleteAssignment(@PathVariable Integer clientId,
                                    @PathVariable Integer productId) throws NotFoundException {
 
-        if(!clientRepository.existsById(clientId)) {
+        if (!clientRepository.existsById(clientId)) {
             throw new NotFoundException("Not found!");
         }
-
         return productRepository.findById(productId)
                 .map(product -> {
                     productRepository.delete(product);

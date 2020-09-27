@@ -20,24 +20,18 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-//@RestController — говорит спрингу, что данный класс является REST контроллером. Т.е. в данном классе будет реализована логика обработки клиентских запросов
 @RequestMapping("clients")
 public class ClientController {
 
     private final ClientRepository clientRepository;
 
-
     @Autowired
     private ClientService clientService;
 
-
-    // @Autowired — говорит спрингу, что в этом месте необходимо внедрить зависимость.
-
-      @Autowired
-      public ClientController(ClientRepository clientRepository) {
-          this.clientRepository = clientRepository;
-     }
-
+    @Autowired
+    public ClientController(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
 
     @PostMapping
     public Client create(@RequestBody Client client) {
@@ -54,25 +48,25 @@ public class ClientController {
 
     @GetMapping(value = "/allClients", produces = "application/json")
     public CompletableFuture<ResponseEntity> findAllClient() {
-        return  clientService.findAllClients().thenApply(ResponseEntity::ok);
+        return clientService.findAllClients().thenApply(ResponseEntity::ok);
     }
 
     @GetMapping(value = "/getClientsByThread", produces = "application/json")
-    public  ResponseEntity getClients(){
-        CompletableFuture<List<Client>> client1=clientService.findAllClients();
-        CompletableFuture<List<Client>> client2=clientService.findAllClients();
-        CompletableFuture<List<Client>> client3=clientService.findAllClients();
-        CompletableFuture.allOf(client1,client2,client3).join();
-        return  ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity getClients() {
+        CompletableFuture<List<Client>> client1 = clientService.findAllClients();
+        CompletableFuture<List<Client>> client2 = clientService.findAllClients();
+        CompletableFuture<List<Client>> client3 = clientService.findAllClients();
+        CompletableFuture.allOf(client1, client2, client3).join();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping
     public Page<Client> findAll(
             @PageableDefault(page = 0, size = 20)
             @SortDefault.SortDefaults({
-        @SortDefault(sort = "name", direction = Sort.Direction.DESC),
-        @SortDefault(sort = "id", direction = Sort.Direction.ASC)
-    })Pageable pageable){
+                    @SortDefault(sort = "name", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "id", direction = Sort.Direction.ASC)
+            }) Pageable pageable) {
         return clientRepository.findAll(pageable);
     }
 
@@ -83,7 +77,7 @@ public class ClientController {
 
     @PutMapping("{id}")
     public Client updateClient(@PathVariable(value = "id") Integer Id,
-                           @RequestBody Client bookDetails) throws NotFoundException {
+                               @RequestBody Client bookDetails) throws NotFoundException {
 
         Client client = clientRepository.findById(Id)
                 .orElseThrow(() -> new NotFoundException("Client not found!"));

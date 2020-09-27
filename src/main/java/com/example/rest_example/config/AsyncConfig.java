@@ -8,17 +8,17 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.Executor;
 
 @Configuration
-@EnableAsync //обнаруживает аннотацию Spring @Async. Включает возможность выполнения асинхронных методов Spring
+@EnableAsync
 public class AsyncConfig {
 
-    @Bean(name ="taskExecutor")
-    public Executor taskExecutor(){
-        ThreadPoolTaskExecutor executor=new ThreadPoolTaskExecutor(); //JavaBean, который позволяет настраивать ThreadPoolExecutor стиль bean-компонента (через его свойства «corePoolSize», «maxPoolSize», «keepAliveSeconds», «queueCapacity») и выставлять его как Spring TaskExecutor.
-        executor.setCorePoolSize(2); //Установите размер основного пула ThreadPoolExecutor.
-        executor.setMaxPoolSize(2); //Установите максимальный размер пула ThreadPoolExecutor
-        executor.setQueueCapacity(100); //Установите емкость BlockingQueue ThreadPoolExecutor.
-        executor.setThreadNamePrefix("sellerThread-"); //Укажите префикс, который будет использоваться для имен вновь созданных потоков. По умолчанию - SimpleAsyncTaskExecutor-
-        executor.initialize(); //настройка ExecutorService.
+    @Bean(name = "taskExecutor")
+    public Executor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("sellerThread-");
+        executor.initialize();
         return executor;
     }
 }
