@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity //указывает, что данный бин (класс) является сущностью
 @Table(name = "clients") //указывает на имя таблицы, которая будет отображаться в этой сущности
@@ -24,8 +25,11 @@ public class Client {
     @Column(name = "phone")
     private String phone;
 
+ /*   @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products;
+
     @OneToMany(targetEntity = Product.class, cascade = CascadeType.ALL) //параметр cascade говорит JPA, что делать с владеемыми объектами при операциях над владельцем.
     @JoinColumn(name = "cp_fk", referencedColumnName = "id")
     private List<Product> products;
-
+*/
    }

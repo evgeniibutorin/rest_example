@@ -18,26 +18,16 @@ import java.util.List;
 @RequestMapping("product")
 public class ProductController {
 
-
-    private final ProductRepository productRepository;
-
-    private final ClientRepository clientRepository;
-
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
-    public ProductController(ProductRepository productRepository, ClientRepository clientRepository) {
-        this.productRepository = productRepository;
-        this.clientRepository = clientRepository;
-    }
+    private ClientRepository clientRepository;
 
-    @PostMapping
-    public Product create(@RequestBody Product product) {
-        return productRepository.save(product);
-    }
 
     @PostMapping("/clients/{clientId}/products")
     public Product addProduct(@PathVariable Integer clientId,
-                                    @RequestBody Product product) throws NotFoundException {
+                              @RequestBody Product product) throws NotFoundException {
         return clientRepository.findById(clientId)
                 .map(client -> {
                     product.setClient(client);
@@ -46,23 +36,25 @@ public class ProductController {
     }
 
 
-
+    //good
     @GetMapping
     public Page<Product> list(
             @PageableDefault(page = 0, size = 20)
             @SortDefault.SortDefaults({
-                    @SortDefault(sort = "product_name", direction = Sort.Direction.DESC),
+                    @SortDefault(sort = "name", direction = Sort.Direction.DESC),
                     @SortDefault(sort = "id", direction = Sort.Direction.ASC)
             }) Pageable pageable){
         return productRepository.findAll(pageable);
     }
 
+    //good
     @GetMapping(value = "{id}")
     public Product getOne(@PathVariable("id") Product product) {
         return product;
     }
 
 
+    //good
     @GetMapping("/clients/{clientId}/products")
     public List<Product> getContactByClientId(@PathVariable Integer clientId) throws NotFoundException {
 
@@ -74,11 +66,7 @@ public class ProductController {
     }
 
 
-    @PutMapping(value = "{id}")
-    public Product update(@PathVariable(name = "id") Product productDB, @RequestBody Product product) {
-        return productRepository.save(productDB);
-    }
-
+    //good
     @PutMapping("/clients/{clientId}/product/{productId}")
     public Product updateProduct(@PathVariable Integer clientId,
                                        @PathVariable Integer productId,
@@ -91,24 +79,27 @@ public class ProductController {
         return productRepository.findById(productId)
                 .map(product -> {
                     product.setName(productUpdated.getName());
-                    product.setDescription( product.getDescription());
+                    product.setDescription(productUpdated.getDescription());
+                    product.setPrice(productUpdated.getPrice());
                     return productRepository.save(product);
                 }).orElseThrow(() -> new NotFoundException("Assignment not found!"));
     }
 
 
 
+    //good
     @DeleteMapping(value = "{id}")
     public void delete(@PathVariable("id") Product product) {
         productRepository.delete(product);
     }
 
+    //good
     @DeleteMapping("/clients/{clientId}/product/{productId}")
     public String deleteAssignment(@PathVariable Integer clientId,
                                    @PathVariable Integer productId) throws NotFoundException {
 
         if(!clientRepository.existsById(clientId)) {
-            throw new NotFoundException("Student not found!");
+            throw new NotFoundException("Not found!");
         }
 
         return productRepository.findById(productId)

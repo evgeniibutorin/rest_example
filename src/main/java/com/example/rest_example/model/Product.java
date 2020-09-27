@@ -27,4 +27,5 @@ public class Product {
     @JsonIgnore
     private Client client;
 
+
 }

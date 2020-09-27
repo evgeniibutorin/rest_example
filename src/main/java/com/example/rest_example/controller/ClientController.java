@@ -3,6 +3,7 @@ package com.example.rest_example.controller;
 import com.example.rest_example.model.Client;
 import com.example.rest_example.repository.ClientRepository;
 import com.example.rest_example.service.ClientService;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +38,32 @@ public class ClientController {
           this.clientRepository = clientRepository;
      }
 
+
     @PostMapping
     public Client create(@RequestBody Client client) {
         return clientRepository.save(client);
+    }
+
+    @PostMapping(value = "/saveClients", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
+    public ResponseEntity saveClients(@RequestParam(value = "files") MultipartFile[] files) throws Exception {
+        for (MultipartFile file : files) {
+            clientService.saveClient(file);
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping(value = "/allClients", produces = "application/json")
+    public CompletableFuture<ResponseEntity> findAllClient() {
+        return  clientService.findAllClients().thenApply(ResponseEntity::ok);
+    }
+
+    @GetMapping(value = "/getClientsByThread", produces = "application/json")
+    public  ResponseEntity getClients(){
+        CompletableFuture<List<Client>> client1=clientService.findAllClients();
+        CompletableFuture<List<Client>> client2=clientService.findAllClients();
+        CompletableFuture<List<Client>> client3=clientService.findAllClients();
+        CompletableFuture.allOf(client1,client2,client3).join();
+        return  ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping
@@ -58,8 +82,19 @@ public class ClientController {
     }
 
     @PutMapping("{id}")
-    public Client client(@PathVariable(name = "id") Client clientDB, @RequestBody Client client) {
-        return clientRepository.save(clientDB);
+    public Client updateClient(@PathVariable(value = "id") Integer Id,
+                           @RequestBody Client bookDetails) throws NotFoundException {
+
+        Client client = clientRepository.findById(Id)
+                .orElseThrow(() -> new NotFoundException("Client not found!"));
+
+        client.setName(bookDetails.getName());
+        client.setEmail(bookDetails.getEmail());
+        client.setPhone(bookDetails.getPhone());
+
+        Client updatedClient = clientRepository.save(client);
+        return updatedClient;
+
     }
 
     @DeleteMapping("{id}")
@@ -67,28 +102,6 @@ public class ClientController {
         clientRepository.delete(client);
     }
 
-    @PostMapping(value = "/seller", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = "application/json")
-    public ResponseEntity saveClients(@RequestParam(value = "files") MultipartFile[] files) throws Exception {
-        for (MultipartFile file : files) {
-            clientService.saveClient(file);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @GetMapping(value = "/allClients", produces = "application/json")
-    public CompletableFuture<ResponseEntity> findAllClient() {
-        return  clientService.findAllClients().thenApply(ResponseEntity::ok);
-    }
-
-
-    @GetMapping(value = "/getClientsByThread", produces = "application/json")
-    public  ResponseEntity getClients(){
-        CompletableFuture<List<Client>> client1=clientService.findAllClients();
-        CompletableFuture<List<Client>> client2=clientService.findAllClients();
-        CompletableFuture<List<Client>> client3=clientService.findAllClients();
-        CompletableFuture.allOf(client1,client2,client3).join();
-        return  ResponseEntity.status(HttpStatus.OK).build();
-    }
 }
 
 
