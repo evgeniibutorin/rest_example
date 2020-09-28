@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -49,15 +48,6 @@ public class ClientController {
     @GetMapping(value = "/allClients", produces = "application/json")
     public CompletableFuture<ResponseEntity> findAllClient() {
         return clientService.findAllClients().thenApply(ResponseEntity::ok);
-    }
-
-    @GetMapping(value = "/getClientsByThread", produces = "application/json")
-    public ResponseEntity getClients() {
-        CompletableFuture<List<Client>> client1 = clientService.findAllClients();
-        CompletableFuture<List<Client>> client2 = clientService.findAllClients();
-        CompletableFuture<List<Client>> client3 = clientService.findAllClients();
-        CompletableFuture.allOf(client1, client2, client3).join();
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping
