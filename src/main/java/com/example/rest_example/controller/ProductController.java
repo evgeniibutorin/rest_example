@@ -34,7 +34,6 @@ public class ProductController {
                 }).orElseThrow(() -> new NotFoundException("Student not found!"));
     }
 
-    //good
     @GetMapping
     public Page<Product> list(
             @PageableDefault(page = 0, size = 20)
@@ -45,13 +44,11 @@ public class ProductController {
         return productRepository.findAll(pageable);
     }
 
-    //good
     @GetMapping(value = "{id}")
     public Product getOne(@PathVariable("id") Product product) {
         return product;
     }
 
-    //good
     @GetMapping("/clients/{clientId}/products")
     public List<Product> getContactByClientId(@PathVariable Integer clientId) throws NotFoundException {
 
@@ -62,7 +59,6 @@ public class ProductController {
         return productRepository.findByClientId(clientId);
     }
 
-    //good
     @PutMapping("/clients/{clientId}/product/{productId}")
     public Product updateProduct(@PathVariable Integer clientId,
                                  @PathVariable Integer productId,
@@ -80,13 +76,11 @@ public class ProductController {
                 }).orElseThrow(() -> new NotFoundException("Assignment not found!"));
     }
 
-    //good
     @DeleteMapping(value = "{id}")
     public void delete(@PathVariable("id") Product product) {
         productRepository.delete(product);
     }
 
-    //good
     @DeleteMapping("/clients/{clientId}/product/{productId}")
     public String deleteAssignment(@PathVariable Integer clientId,
                                    @PathVariable Integer productId) throws NotFoundException {
