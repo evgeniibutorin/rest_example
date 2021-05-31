@@ -20,7 +20,7 @@ public class Product {
 
     private double price;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.DETACH)
     @JoinColumn(name = "client_id", nullable = false)
     @JsonIgnore
     private Client client;
